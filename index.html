@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="架空の中国地方で小勢力から威信と国力を競う、農民反乱のヘックスストラテジー。">
+<title>乱世の潮流 — モブコントロール — ブラウザ版</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23416e56' d='M32 2 58 17v30L32 62 6 47V17z'/%3E%3Cpath fill='%23e5c787' d='M18 25h28v25H18zM14 21l18-11 18 11z'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#0e1916;color:#e2e5d8;font:14px 'Yu Gothic UI','Meiryo',sans-serif}body{display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}button,a{font:inherit;color:inherit}button,.link-button{border:1px solid #456955;background:#223f32;border-radius:6px;padding:7px 13px;cursor:pointer;text-decoration:none}button:hover,.link-button:hover{background:#376146}button:disabled{opacity:.5;cursor:wait}#stage{position:relative;width:min(100vw,calc((100dvh - 54px)*1.6));aspect-ratio:1.6;background:#0e1916}#canvas{width:100%;height:100%;display:block;outline:none;touch-action:none}#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 30%,#2b4437,#0e1916 75%);text-align:center}.welcome{max-width:680px;padding:35px}h1{font-weight:500;color:#e5c787;font-size:clamp(28px,4vw,48px);letter-spacing:.1em;margin:0 0 15px}.subtitle{color:#83c6a6;letter-spacing:.16em;font-size:12px}.intro{line-height:1.9;color:#afc5b8;margin:24px 0}#start{padding:13px 38px;font-size:18px;background:#416e56}#progress{display:none;width:100%;accent-color:#83c6a6;margin-top:22px}#notice{line-height:1.6;color:#e5c787;white-space:pre-wrap}#toolbar{min-height:48px;max-width:1440px;width:100%;display:flex;gap:9px;align-items:center;justify-content:center;padding:6px 12px;font-size:12px;flex-wrap:wrap}#turn-label{margin-right:auto;color:#abc5b5}#toolbar button{padding:4px 9px}#storage-warning{color:#e5c787}#editor-dialog{padding:0;border:1px solid #527a62;background:#101e18;color:#e2e5d8;width:98vw;max-width:none;height:96vh;max-height:none}#editor-dialog::backdrop{background:#000b}.editor-header{height:46px;display:flex;align-items:center;justify-content:space-between;padding:7px 12px}#editor-frame{border:0;width:100%;height:calc(100% - 46px)}@media(max-width:850px){#stage{width:100vw}#toolbar{font-size:11px}#turn-label{display:none}}[hidden]{display:none!important}
+</style>
+
+</head>
+<body>
+<main id="stage">
+<canvas id="canvas" width="1440" height="900" tabindex="0" aria-label="乱世の潮流のゲーム画面"></canvas>
+<section id="loading">
+<div class="welcome"><p class="subtitle">MOB CONTROL / 六河争流</p><h1>乱世の潮流</h1><p class="intro">小さな地方勢力から、乱世を動かす勢力へ。<br>民を救い、反乱の進路に働きかけ、威信と国力を競う。<br>64 × 40 ヘックス / 5勢力 / 80ターン</p><button id="start">ゲームをはじめる</button><progress id="progress"></progress><p id="notice" role="status">初回はゲームデータの読込に少し時間がかかります。<br>パソコンのChrome・Edgeとマウス操作に対応しています。</p></div>
+</section>
+</main>
+<nav id="toolbar" aria-label="ブラウザ版の操作">
+<span id="turn-label" aria-live="polite">ブラウザ版 · 試作</span><span id="storage-warning" hidden>保存できない設定です。セーブ書出しをご利用ください。</span>
+<button id="backup-save" disabled>セーブ書出し</button><button id="restore-save" disabled>セーブ読込</button><button id="open-editor">地図編集</button><button id="fullscreen">全画面</button><a href="help.html" target="_blank" rel="noopener">遊び方</a><a href="credits.html" target="_blank" rel="noopener">クレジット</a>
+</nav>
+<input type="file" id="import-file" accept=".json,application/json" hidden>
+<dialog id="editor-dialog"><div class="editor-header"><span>地図を編集 → 「ゲーム用JSON保存」 → ゲームの「地図読込」</span><button id="close-editor">ゲームへ戻る</button></div><iframe id="editor-frame" title="HEXAGAMEマップエディタ"></iframe></dialog>
+<noscript>このゲームを遊ぶにはJavaScriptを有効にしてください。</noscript>
+<script src="bridge.js"></script>
+<script src="index.js"></script>
+<script>
+'use strict';
+const engine = new Engine({"args":[],"canvasResizePolicy":0,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":7109524,"index.wasm":37686550},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
+document.getElementById('start').addEventListener('click', async () => {
+  const start=document.getElementById('start'),progress=document.getElementById('progress'),notice=document.getElementById('notice');
+  start.disabled=true;start.textContent='読み込み中…';progress.style.display='block';
+  try {
+    const missing=Engine.getMissingFeatures({threads:false});
+    if(missing.length)throw Error('このブラウザでは必要な機能が使えません。ChromeまたはEdgeでお試しください。\n'+missing.join(', '));
+    await engine.startGame({canvas:document.getElementById('canvas'),onProgress(current,total){if(total){progress.max=total;progress.value=current;notice.textContent='ゲームデータを読み込み中 '+Math.round(current/total*100)+'%'}},onPrintError(...args){console.error(...args)}});
+    document.getElementById('loading').hidden=true;document.getElementById('canvas').focus();
+  } catch(error) {notice.textContent='起動できませんでした。ページを再読み込みしてお試しください。\n'+error.message;progress.style.display='none';console.error(error)}
+});
+</script>
+</body></html>
+
