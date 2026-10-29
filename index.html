@@ -15,7 +15,7 @@
 <main id="stage">
 <canvas id="canvas" width="1440" height="900" tabindex="0" aria-label="乱世の潮流のゲーム画面"></canvas>
 <section id="loading">
-<div class="welcome"><p class="subtitle">MOB CONTROL / 六河争流</p><h1>乱世の潮流</h1><p class="intro">小さな地方勢力から、乱世を動かす勢力へ。<br>民を救い、反乱の進路に働きかけ、威信と国力を競う。<br>64 × 40 ヘックス / 5勢力 / 80ターン</p><button id="start">ゲームをはじめる</button><progress id="progress"></progress><p id="notice" role="status">初回はゲームデータの読込に少し時間がかかります。<br>パソコンのChrome・Edgeとマウス操作に対応しています。</p></div>
+<div class="welcome"><p class="subtitle">HEXSTRATEGY 3D / 六河争流</p><h1>乱世の潮流</h1><p class="intro">小さな地方勢力から、乱世を動かす勢力へ。<br>民を救い、反乱の進路に働きかけ、威信と国力を競う。<br>64 × 40 ヘックス / 5勢力 / 80ターン</p><button id="start">ゲームをはじめる</button><progress id="progress"></progress><p id="notice" role="status">初回はゲームデータと3D地形の準備に時間がかかります。<br>パソコンのChrome・Edgeとマウス操作に対応しています。</p></div>
 </section>
 </main>
 <nav id="toolbar" aria-label="ブラウザ版の操作">
@@ -29,7 +29,7 @@
 <script src="index.js"></script>
 <script>
 'use strict';
-const engine = new Engine({"args":[],"canvasResizePolicy":0,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":7109524,"index.wasm":37686550},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
+const engine = new Engine({"args":[],"canvasResizePolicy":0,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":20448048,"index.wasm":37686550},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
 document.getElementById('start').addEventListener('click', async () => {
   const start=document.getElementById('start'),progress=document.getElementById('progress'),notice=document.getElementById('notice');
   start.disabled=true;start.textContent='読み込み中…';progress.style.display='block';
